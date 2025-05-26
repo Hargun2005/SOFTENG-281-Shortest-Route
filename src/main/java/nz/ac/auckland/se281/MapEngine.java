@@ -62,23 +62,39 @@ public class MapEngine {
   /** this method is invoked when the user run the command info-country. */
   public void showInfoCountry() {
     MessageCli.INSERT_COUNTRY.printMessage();
+    while (true) {
+      String formattedCountry = null;
+      try {
+        String inputCountry = Utils.scanner.nextLine();
+        formattedCountry = Utils.capitalizeFirstLetterOfEachWord(inputCountry);
 
-    String inputCountry = Utils.scanner.nextLine();
+        Country country = getCountry(formattedCountry);
 
-    Country country = getCountry(inputCountry);
+        // Get neighbors - LinkedHashSet already preserves insertion order
+        List<String> neighbours = new ArrayList<>(countryGraph.get(formattedCountry));
 
-    // Get neighbors - LinkedHashSet already preserves insertion order
-    List<String> neighbours = new ArrayList<>(countryGraph.get(inputCountry));
+        MessageCli.COUNTRY_INFO.printMessage(
+            country.getName(),
+            country.getContinent(),
+            String.valueOf(country.getFuelCost()),
+            neighbours.toString());
 
-    MessageCli.COUNTRY_INFO.printMessage(
-        country.getName(),
-        country.getContinent(),
-        String.valueOf(country.getFuelCost()),
-        neighbours.toString());
+        break;
+      } catch (CountryNotFoundException e) {
+        MessageCli.INVALID_COUNTRY.printMessage(formattedCountry);
+      }
+    }
   }
 
-  private Country getCountry(String countryName) {
-
+  /**
+   * Get the country object by name.
+   *
+   * @throws CountryNotFoundException if the country is not found
+   */
+  private Country getCountry(String countryName) throws CountryNotFoundException {
+    if (!countries.containsKey(countryName)) {
+      throw new CountryNotFoundException(countryName);
+    }
     return countries.get(countryName);
   }
 

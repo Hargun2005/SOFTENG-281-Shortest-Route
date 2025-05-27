@@ -109,15 +109,25 @@ public class MapEngine {
     }
     // Find the shortest path using BFS via the Graph class
     List<String> route = countryGraph.getPathBFS(startCountry, endCountry);
-    // Display the results
-    MessageCli.ROUTE_INFO.printMessage(route.toString());
 
     // Calculate the fuel consumption
     int totalFuel = calculateFuelConsumption(route);
-    MessageCli.FUEL_INFO.printMessage(String.valueOf(totalFuel));
 
     Map<String, Integer> continentFuel = getContinentFuelConsumption(route);
+
+    // Find the continent with the highest fuel consumption
+    String highestFuelContinent = findHighestFuelContinent(continentFuel);
+
+    // Display the results
+    MessageCli.ROUTE_INFO.printMessage(route.toString());
+    MessageCli.FUEL_INFO.printMessage(String.valueOf(totalFuel));
     MessageCli.CONTINENT_INFO.printMessage(formatContinentFuel(continentFuel));
+
+    // Only print if there are intermediate countries (fuel > 0)
+    if (totalFuel > 0) {
+      MessageCli.FUEL_CONTINENT_INFO.printMessage(
+          highestFuelContinent + " (" + continentFuel.get(highestFuelContinent) + ")");
+    }
   }
 
   /**
@@ -159,6 +169,19 @@ public class MapEngine {
       }
     }
     return continentFuel;
+  }
+
+  private String findHighestFuelContinent(Map<String, Integer> continentFuel) {
+    String highestContinent = null;
+    int highestFuel = -1;
+
+    for (Map.Entry<String, Integer> entry : continentFuel.entrySet()) {
+      if (entry.getValue() > highestFuel) {
+        highestFuel = entry.getValue();
+        highestContinent = entry.getKey();
+      }
+    }
+    return highestContinent;
   }
 
   private int calculateFuelConsumption(List<String> route) {

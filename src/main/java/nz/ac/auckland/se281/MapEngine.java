@@ -112,6 +112,10 @@ public class MapEngine {
     // Display the results
     MessageCli.ROUTE_INFO.printMessage(route.toString());
 
+    // Calculate the fuel consumption
+    int totalFuel = calculateFuelConsumption(route);
+    MessageCli.FUEL_INFO.printMessage(String.valueOf(totalFuel));
+
     Map<String, Integer> continentFuel = getContinentFuelConsumption(route);
     MessageCli.CONTINENT_INFO.printMessage(formatContinentFuel(continentFuel));
   }
@@ -155,6 +159,18 @@ public class MapEngine {
       }
     }
     return continentFuel;
+  }
+
+  private int calculateFuelConsumption(List<String> route) {
+    // Same implementation as before
+    int totalFuel = 0;
+
+    // Skip the first and last country
+    for (int i = 1; i < route.size() - 1; i++) {
+      totalFuel += countries.get(route.get(i)).getFuelCost();
+    }
+
+    return totalFuel;
   }
 
   private String formatContinentFuel(Map<String, Integer> continentFuel) {

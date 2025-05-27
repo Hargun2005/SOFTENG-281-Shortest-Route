@@ -2,6 +2,7 @@ package nz.ac.auckland.se281;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -110,6 +111,9 @@ public class MapEngine {
     List<String> route = countryGraph.getPathBFS(startCountry, endCountry);
     // Display the results
     MessageCli.ROUTE_INFO.printMessage(route.toString());
+
+    Map<String, Integer> continentFuel = getContinentFuelConsumption(route);
+    MessageCli.CONTINENT_INFO.printMessage(formatContinentFuel(continentFuel));
   }
 
   /**
@@ -131,5 +135,33 @@ public class MapEngine {
         MessageCli.INVALID_COUNTRY.printMessage(formattedCountry);
       }
     }
+  }
+
+  private Map<String, Integer> getContinentFuelConsumption(List<String> route) {
+    Map<String, Integer> continentFuel = new LinkedHashMap<>();
+
+    for (int i = 0; i < route.size(); i++) {
+      String country = route.get(i);
+      String continent = countries.get(country).getContinent();
+
+      // Add continent if not already in the map
+      if (!continentFuel.containsKey(continent)) {
+        continentFuel.put(continent, 0);
+      }
+      // Add fuel for intermediate countries only
+      if (i > 0 && i < route.size() - 1) {
+        int currentFuel = continentFuel.get(continent);
+        continentFuel.put(continent, currentFuel + countries.get(country).getFuelCost());
+      }
+    }
+    return continentFuel;
+  }
+
+  private String formatContinentFuel(Map<String, Integer> continentFuel) {
+    List<String> result = new ArrayList<>();
+    for (Map.Entry<String, Integer> entry : continentFuel.entrySet()) {
+      result.add(entry.getKey() + " " + "(" + entry.getValue() + ")");
+    }
+    return result.toString();
   }
 }

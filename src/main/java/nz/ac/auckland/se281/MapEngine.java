@@ -106,6 +106,10 @@ public class MapEngine {
       MessageCli.NO_CROSSBORDER_TRAVEL.printMessage();
       return;
     }
+    // Find the shortest path using BFS via the Graph class
+    List<String> route = countryGraph.getPathBFS(startCountry, endCountry);
+    // Display the results
+    MessageCli.ROUTE_INFO.printMessage(route.toString());
   }
 
   /**

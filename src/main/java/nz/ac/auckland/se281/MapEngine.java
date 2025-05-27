@@ -62,27 +62,24 @@ public class MapEngine {
   /** this method is invoked when the user run the command info-country. */
   public void showInfoCountry() {
     MessageCli.INSERT_COUNTRY.printMessage();
-    while (true) {
-      String formattedCountry = null;
-      try {
-        String inputCountry = Utils.scanner.nextLine();
-        formattedCountry = Utils.capitalizeFirstLetterOfEachWord(inputCountry);
 
-        Country country = getCountry(formattedCountry);
+    String formattedCountry = getValidCountryName();
 
-        // Get neighbors - LinkedHashSet already preserves insertion order
-        List<String> neighbours = new ArrayList<>(countryGraph.get(formattedCountry));
+    // This shouldn't throw an exception now because getValidCountryName() ensures a valid country
+    try {
+      Country country = getCountry(formattedCountry);
 
-        MessageCli.COUNTRY_INFO.printMessage(
-            country.getName(),
-            country.getContinent(),
-            String.valueOf(country.getFuelCost()),
-            neighbours.toString());
+      // Get neighbors - LinkedHashSet already preserves insertion order
+      List<String> neighbours = new ArrayList<>(countryGraph.get(formattedCountry));
 
-        break;
-      } catch (CountryNotFoundException e) {
-        MessageCli.INVALID_COUNTRY.printMessage(formattedCountry);
-      }
+      MessageCli.COUNTRY_INFO.printMessage(
+          country.getName(),
+          country.getContinent(),
+          String.valueOf(country.getFuelCost()),
+          neighbours.toString());
+    } catch (CountryNotFoundException e) {
+      // This should never happen, but just in case
+      System.err.println("Unexpected error: " + e.getMessage());
     }
   }
 
@@ -99,5 +96,39 @@ public class MapEngine {
   }
 
   /** this method is invoked when the user run the command route. */
-  public void showRoute() {}
+  public void showRoute() {
+    // Ask for the starting country
+    MessageCli.INSERT_SOURCE.printMessage();
+    String startCountry = getValidCountryName();
+    // Ask for the destination country
+    MessageCli.INSERT_DESTINATION.printMessage();
+    String endCountry = getValidCountryName();
+
+    // if source and destination are the same
+    if (startCountry.equals(endCountry)) {
+      MessageCli.NO_CROSSBORDER_TRAVEL.printMessage();
+      return;
+    }
+  }
+
+  /**
+   * Gets a valid country name from user input, prompting until valid. Reuses code from Task 1 for
+   * validation.
+   */
+  private String getValidCountryName() {
+    while (true) {
+      String formattedCountry = null;
+      try {
+        String inputCountry = Utils.scanner.nextLine();
+        formattedCountry = Utils.capitalizeFirstLetterOfEachWord(inputCountry);
+
+        // this will throw an exception when the country is not found
+        getCountry(formattedCountry);
+
+        return formattedCountry;
+      } catch (CountryNotFoundException e) {
+        MessageCli.INVALID_COUNTRY.printMessage(formattedCountry);
+      }
+    }
+  }
 }

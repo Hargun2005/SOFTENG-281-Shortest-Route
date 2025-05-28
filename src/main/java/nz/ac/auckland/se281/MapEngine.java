@@ -112,7 +112,7 @@ public class MapEngine {
     RouteAnalyzer analyzer = new RouteAnalyzer(countries);
 
     // Find the shortest path using BFS via the Graph class
-    List<String> route = countryGraph.getPathBFS(startCountry, endCountry);
+    List<String> route = countryGraph.findShortestPath(startCountry, endCountry);
 
     // Calculate the fuel consumption
     int totalFuel = analyzer.calculateFuelConsumption(route);

@@ -39,7 +39,7 @@ public class Graph<T> {
     return adjacencyMap.containsKey(node);
   }
 
-  public List<T> getPathBFS(T start, T dest) {
+  public List<T> findShortestPath(T start, T dest) {
     List<T> visited = new ArrayList<>();
     Queue<T> queue = new LinkedList<>();
     Map<T, T> parentMap = new HashMap<>();

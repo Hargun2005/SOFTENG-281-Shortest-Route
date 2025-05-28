@@ -129,10 +129,9 @@ public class MapEngine {
     MessageCli.CONTINENT_INFO.printMessage(analyzer.formatContinentFuel(continentFuel));
 
     // Only print if there are intermediate countries (fuel > 0)
-    if (totalFuel > 0) {
-      MessageCli.FUEL_CONTINENT_INFO.printMessage(
-          highestFuelContinent + " (" + continentFuel.get(highestFuelContinent) + ")");
-    }
+
+    MessageCli.FUEL_CONTINENT_INFO.printMessage(
+        highestFuelContinent + " (" + continentFuel.get(highestFuelContinent) + ")");
   }
 
   /**

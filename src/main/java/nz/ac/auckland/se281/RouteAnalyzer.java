@@ -54,10 +54,21 @@ public class RouteAnalyzer {
     return continentFuel;
   }
 
-  /** Finds the continent with the highest fuel consumption. */
+  /**
+   * Finds the continent with the highest fuel consumption.
+   *
+   * @param continentFuel A map of continents to their fuel consumption values
+   * @return The name of the continent with the highest fuel consumption. If multiple continents
+   *     have the same highest value, returns the first one encountered in the map (which preserves
+   *     insertion order since we use LinkedHashMap).
+   */
   public String findHighestFuelContinent(Map<String, Integer> continentFuel) {
     String highestContinent = null;
     int highestFuel = -1;
+
+    // Iterate through the continents and their fuel values
+    // We use strict inequality (>) rather than (>=) to ensure we select
+    // the first continent with the highest value in case of ties
 
     for (Map.Entry<String, Integer> entry : continentFuel.entrySet()) {
       if (entry.getValue() > highestFuel) {

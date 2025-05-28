@@ -2,7 +2,6 @@ package nz.ac.auckland.se281;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -98,30 +97,36 @@ public class MapEngine {
     // Ask for the starting country
     MessageCli.INSERT_SOURCE.printMessage();
     String startCountry = getValidCountryName();
+
     // Ask for the destination country
     MessageCli.INSERT_DESTINATION.printMessage();
     String endCountry = getValidCountryName();
 
-    // if source and destination are the same
+    // If source and destination are the same
     if (startCountry.equals(endCountry)) {
       MessageCli.NO_CROSSBORDER_TRAVEL.printMessage();
       return;
     }
+
+    // Create a route analyzer
+    RouteAnalyzer analyzer = new RouteAnalyzer(countries);
+
     // Find the shortest path using BFS via the Graph class
     List<String> route = countryGraph.getPathBFS(startCountry, endCountry);
 
     // Calculate the fuel consumption
-    int totalFuel = calculateFuelConsumption(route);
+    int totalFuel = analyzer.calculateFuelConsumption(route);
 
-    Map<String, Integer> continentFuel = getContinentFuelConsumption(route);
+    // Get the continents visited with their fuel consumption
+    Map<String, Integer> continentFuel = analyzer.getContinentFuelConsumption(route);
 
     // Find the continent with the highest fuel consumption
-    String highestFuelContinent = findHighestFuelContinent(continentFuel);
+    String highestFuelContinent = analyzer.findHighestFuelContinent(continentFuel);
 
     // Display the results
     MessageCli.ROUTE_INFO.printMessage(route.toString());
     MessageCli.FUEL_INFO.printMessage(String.valueOf(totalFuel));
-    MessageCli.CONTINENT_INFO.printMessage(formatContinentFuel(continentFuel));
+    MessageCli.CONTINENT_INFO.printMessage(analyzer.formatContinentFuel(continentFuel));
 
     // Only print if there are intermediate countries (fuel > 0)
     if (totalFuel > 0) {
@@ -149,58 +154,5 @@ public class MapEngine {
         MessageCli.INVALID_COUNTRY.printMessage(formattedCountry);
       }
     }
-  }
-
-  private Map<String, Integer> getContinentFuelConsumption(List<String> route) {
-    Map<String, Integer> continentFuel = new LinkedHashMap<>();
-
-    for (int i = 0; i < route.size(); i++) {
-      String country = route.get(i);
-      String continent = countries.get(country).getContinent();
-
-      // Add continent if not already in the map
-      if (!continentFuel.containsKey(continent)) {
-        continentFuel.put(continent, 0);
-      }
-      // Add fuel for intermediate countries only
-      if (i > 0 && i < route.size() - 1) {
-        int currentFuel = continentFuel.get(continent);
-        continentFuel.put(continent, currentFuel + countries.get(country).getFuelCost());
-      }
-    }
-    return continentFuel;
-  }
-
-  private String findHighestFuelContinent(Map<String, Integer> continentFuel) {
-    String highestContinent = null;
-    int highestFuel = -1;
-
-    for (Map.Entry<String, Integer> entry : continentFuel.entrySet()) {
-      if (entry.getValue() > highestFuel) {
-        highestFuel = entry.getValue();
-        highestContinent = entry.getKey();
-      }
-    }
-    return highestContinent;
-  }
-
-  private int calculateFuelConsumption(List<String> route) {
-    // Same implementation as before
-    int totalFuel = 0;
-
-    // Skip the first and last country
-    for (int i = 1; i < route.size() - 1; i++) {
-      totalFuel += countries.get(route.get(i)).getFuelCost();
-    }
-
-    return totalFuel;
-  }
-
-  private String formatContinentFuel(Map<String, Integer> continentFuel) {
-    List<String> result = new ArrayList<>();
-    for (Map.Entry<String, Integer> entry : continentFuel.entrySet()) {
-      result.add(entry.getKey() + " " + "(" + entry.getValue() + ")");
-    }
-    return result.toString();
   }
 }

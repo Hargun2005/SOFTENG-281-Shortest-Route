@@ -39,10 +39,17 @@ public class Graph<T> {
     return adjacencyMap.containsKey(node);
   }
 
+  /**
+   * Finds the shortest path between two nodes using breadth-first search.
+   *
+   * @param start The starting node
+   * @param dest The destination node
+   * @return Ordered list of nodes in the shortest path, or empty list if no path exists
+   */
   public List<T> findShortestPath(T start, T dest) {
     List<T> visited = new ArrayList<>();
     Queue<T> queue = new LinkedList<>();
-    Map<T, T> parentMap = new HashMap<>();
+    Map<T, T> parentMap = new HashMap<>(); // Tracks path for reconstruction
 
     parentMap.put(start, null);
     queue.add(start);
@@ -52,7 +59,7 @@ public class Graph<T> {
       T node = queue.poll();
 
       if (node.equals(dest)) {
-        // Compute the path
+        // Reconstruct path from destination to start, then reverse
         List<T> path = new ArrayList<>();
         for (T n = dest; n != null; n = parentMap.get(n)) {
           path.add(n);
@@ -60,6 +67,7 @@ public class Graph<T> {
         Collections.reverse(path);
         return path;
       }
+      // Explore unvisited neighbors
       for (T n : adjacencyMap.get(node)) {
         if (!visited.contains(n)) {
           visited.add(n);
@@ -68,6 +76,6 @@ public class Graph<T> {
         }
       }
     }
-    return new ArrayList<>();
+    return new ArrayList<>(); // No path found
   }
 }

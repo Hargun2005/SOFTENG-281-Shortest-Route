@@ -1,6 +1,5 @@
 package nz.ac.auckland.se281;
 
-import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -82,12 +81,19 @@ public class RouteAnalyzer {
 
   /** Formats the continent fuel map into a string representation. */
   public String formatContinentFuel(Map<String, Integer> continentFuel) {
-    List<String> result = new ArrayList<>();
+    StringBuilder result = new StringBuilder("[");
+    boolean first = true;
 
     for (Map.Entry<String, Integer> entry : continentFuel.entrySet()) {
-      result.add(entry.getKey() + " (" + entry.getValue() + ")");
+      if (!first) {
+        result.append(", ");
+      } else {
+        first = false;
+      }
+      result.append(entry.getKey()).append(" (").append(entry.getValue()).append(")");
     }
 
+    result.append("]");
     return result.toString();
   }
 }

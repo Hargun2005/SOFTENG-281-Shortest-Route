@@ -79,17 +79,26 @@ public class RouteAnalyzer {
     return highestContinent;
   }
 
-  /** Formats the continent fuel map into a string representation. */
+  /**
+   * Formats the continent fuel map into a string representation. The output format is: [Continent1
+   * (FuelValue1), Continent2 (FuelValue2), ...] Continents are displayed in their original
+   * insertion order (as preserved by LinkedHashMap).
+   *
+   * @param continentFuel Map containing continent names as keys and their fuel consumption as
+   *     values
+   * @return A formatted string representation of the continent-fuel data
+   */
   public String formatContinentFuel(Map<String, Integer> continentFuel) {
     StringBuilder result = new StringBuilder("[");
     boolean first = true;
 
     for (Map.Entry<String, Integer> entry : continentFuel.entrySet()) {
       if (!first) {
-        result.append(", ");
+        result.append(", "); // Add comma separator between entries (not for the first one)
       } else {
-        first = false;
+        first = false; // After processing first entry, set flag to false
       }
+      // Append each continent with its fuel value in parentheses
       result.append(entry.getKey()).append(" (").append(entry.getValue()).append(")");
     }
 

@@ -2,7 +2,7 @@
 
 This project is a Java-based command-line application that models the world map from the classic board game *Risk* as a graph. The primary goal is to find the shortest travel route between any two countries, calculate the associated "fuel" cost for the journey, and provide a breakdown of the continents visited.
 
-This application was developed as part of Assignment #3 for the SE281 course at the University of Auckland.
+This application was developed as part of Assignment #3 for the SOFTENG281 course at the University of Auckland.
 
 <p align="center">
   <img src= https://softeng281.digitaledu.ac.nz/_images/assignments/a3/risk_game_board.svg alt="Risk Map" width="600"/>
@@ -115,5 +115,3 @@ You will spend this amount of fuel for your journey: 28 units
 You will visit the following continents: [South America (7), North America (15), Asia (6)]
 The continent where you will spend the most fuel is: North America (15)
 
-This project is based on the Assignment 3 Specification for the SOFTENG281 course at the University of Auckland.
-The map concept is from the classic strategy board game Risk.
